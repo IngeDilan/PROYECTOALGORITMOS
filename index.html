@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema Web de Expedientes Confidenciales - UMG</title>
+  <style>
+    /* PALETA DE COLORES PROFESIONAL UMG */
+    :root {
+      --umg-navy: #0A192F;
+      --umg-blue-dark: #1E3A8A;
+      --umg-blue-sky: #0284C7;
+      --umg-orange: #C2410C;
+      --umg-red: #991B1B;
+      --bg-color: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text-dark: #0F172A;
+      --text-muted: #475569;
+      --border-color: #E2E8F0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* ENCABEZADO INSTITUCIONAL */
+    .umg-header {
+      background: linear-gradient(135deg, var(--umg-navy) 0%, var(--umg-blue-dark) 100%);
+      color: #FFFFFF;
+      padding: 16px 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      border-bottom: 4px solid var(--umg-red);
+      position: relative;
+      z-index: 10;
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    .logo-area img {
+      width: 55px;
+      height: 55px;
+      object-fit: contain;
+      background: #FFFFFF;
+      border-radius: 50%;
+      padding: 2px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .title-area h1 {
+      font-size: 1.4rem;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+    }
+
+    .title-area p {
+      font-size: 0.85rem;
+      color: #93C5FD;
+      margin-top: 2px;
+    }
+
+    /* CONTENEDOR PRINCIPAL Y ANIMACIONES SLIDE (POWERPOINT) */
+    .main-viewport {
+      flex: 1;
+      position: relative;
+      max-width: 1300px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 25px;
+    }
+
+    .view-screen {
+      width: 100%;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+    }
+
+    /* Menú Rueda principal */
+    #menuView {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 65vh;
+    }
+
+    /* Pestaña tipo Hoja deslizante encima del menú */
+    .module-sheet {
+      position: absolute;
+      top: 25px;
+      left: 25px;
+      right: 25px;
+      background: transparent;
+      display: none;
+      transform: translateY(100vh);
+      opacity: 0;
+      z-index: 20;
+    }
+
+    .module-sheet.active-slide {
+      display: block;
+      animation: slideInSheet 0.55s forwards cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .module-sheet.exit-slide {
+      animation: slideOutSheet 0.45s forwards cubic-bezier(0.7, 0, 0.84, 0);
+    }
+
+    @keyframes slideInSheet {
+      from { transform: translateY(100vh); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes slideOutSheet {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(100vh); opacity: 0; }
+    }
+
+    /* DISEÑO DE LA RUEDA INTERACTIVA (SVG) */
+    .wheel-container {
+      position: relative;
+      width: 420px;
+      height: 420px;
+    }
+
+    .wheel-svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
+    }
+
+    .wheel-sector {
+      cursor: pointer;
+      transition: transform 0.25s ease, filter 0.25s ease;
+      transform-origin: 200px 200px;
+    }
+
+    .wheel-sector:hover {
+      transform: scale(1.03);
+      filter: brightness(1.12);
+    }
+
+    .wheel-center-circle {
+      fill: var(--umg-navy);
+      stroke: #FFFFFF;
+      stroke-width: 4;
+    }
+
+    .wheel-center-text {
+      fill: #FFFFFF;
+      font-size: 14px;
+      font-weight: 700;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      pointer-events: none;
+    }
+
+    .sector-label {
+      fill: #FFFFFF;
+      font-size: 12px;
+      font-weight: 700;
+      text-anchor: middle;
+      pointer-events: none;
+    }
+
+    /* COMPONENTES Y TARJETAS */
+    .btn-back-menu {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--card-bg);
+      color: var(--umg-navy);
+      border: 1px solid var(--border-color);
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      transition: all 0.2s;
+    }
+
+    .btn-back-menu:hover {
+      background-color: var(--umg-navy);
+      color: #FFFFFF;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .card-header {
+      background-color: var(--umg-navy);
+      color: #FFFFFF;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-header h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .card-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    /* FORMULARIOS Y TABLA */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--umg-blue-sky);
+    }
+
+    .btn-primary {
+      background-color: var(--umg-blue-dark);
+      color: #FFFFFF;
+      border: none;
+      padding: 11px 18px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--umg-blue-sky);
+    }
+
+    .btn-secondary {
+      background-color: #E2E8F0;
+      color: var(--text-dark);
+      border: 1px solid var(--border-color);
+      padding: 11px 18px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-danger {
+      background-color: var(--umg-red);
+      color: #FFFFFF;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .btn-danger:hover {
+      background-color: #7F1D1D;
+    }
+
+    .btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .metric-box {
+      background-color: var(--bg-color);
+      padding: 10px 14px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      border: 1px dashed var(--border-color);
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: var(--umg-navy);
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: #F1F5F9;
+    }
+
+    /* PIE DE PÁGINA */
+    .umg-footer {
+      background-color: var(--umg-navy);
+      color: #FFFFFF;
+      padding: 14px 30px;
+      border-top: 3px solid var(--umg-blue-sky);
+      font-size: 0.85rem;
+      margin-top: auto;
+    }
+
+    .footer-content {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Encabezado Institucional -->
+  <header class="umg-header">
+    <div class="header-content">
+      <div class="logo-area">
+        <img src="https://www.nicepng.com/ourpic/u2w7o0i1u2e6q8w7_this-escudo-de-la-universidad-mariano-galvez/" 
+             alt="Escudo UMG" 
+             onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/4/4A/Logo_UMG.png'; this.onerror=null;">
+      </div>
+      <div class="title-area">
+        <h1>SISTEMA WEB DE EXPEDIENTES CONFIDENCIALES</h1>
+        <p>Proyecto final de Algoritmos</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-viewport">
+
+    <!-- VISTA PRINCIPAL: MENÚ DE RUEDA SECTORIZADA -->
+    <div id="menuView" class="view-screen">
+      <div class="wheel-container">
+        <svg class="wheel-svg" viewBox="0 0 400 400">
+          <!-- Sector 1: Persistencia (Carga/Guardado) -->
+          <g class="wheel-sector" onclick="abrirModulo('sec-persistencia')">
+            <path d="M 200 200 L 200 20 A 180 180 0 0 1 371.2 144.3 Z" fill="#0A192F" />
+            <text x="265" y="105" class="sector-label">1. Persistencia</text>
+          </g>
+
+          <!-- Sector 2: Gestión (Alta/Baja) -->
+          <g class="wheel-sector" onclick="abrirModulo('sec-gestion')">
+            <path d="M 200 200 L 371.2 144.3 A 180 180 0 0 1 305.8 345.6 Z" fill="#1E3A8A" />
+            <text x="305" y="225" class="sector-label">2. Gestión</text>
+          </g>
+
+          <!-- Sector 3: Ordenar -->
+          <g class="wheel-sector" onclick="abrirModulo('sec-ordenar')">
+            <path d="M 200 200 L 305.8 345.6 A 180 180 0 0 1 94.2 345.6 Z" fill="#0284C7" />
+            <text x="200" y="325" class="sector-label">3. Ordenar</text>
+          </g>
+
+          <!-- Sector 4: Buscar -->
+          <g class="wheel-sector" onclick="abrirModulo('sec-buscar')">
+            <path d="M 200 200 L 94.2 345.6 A 180 180 0 0 1 28.8 144.3 Z" fill="#C2410C" />
+            <text x="95" y="225" class="sector-label">4. Buscar</text>
+          </g>
+
+          <!-- Sector 5: Cifrar -->
+          <g class="wheel-sector" onclick="abrirModulo('sec-cifrar')">
+            <path d="M 200 200 L 28.8 144.3 A 180 180 0 0 1 200 20 Z" fill="#991B1B" />
+            <text x="135" y="105" class="sector-label">5. Cifrar</text>
+          </g>
+
+          <!-- Círculo Central Decorativo -->
+          <circle cx="200" cy="200" r="50" class="wheel-center-circle" />
+          <text x="200" y="200" class="wheel-center-text">MÓDULOS</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- HOJA / PESTAÑA DESLIZANTE PARA CADA MÓDULO -->
+
+    <!-- Módulo 1: Persistencia -->
+    <div id="sec-persistencia" class="module-sheet">
+      <button class="btn-back-menu" onclick="cerrarModulo('sec-persistencia')">← Volver al Menú Principal</button>
+      <section class="card">
+        <div class="card-header">
+          <h2>1. Archivo y Persistencia</h2>
+        </div>
+        <div class="card-body">
+          <p>Cargue un archivo JSON existente con registros de expedientes o exporte el listado actual.</p>
+          <div class="form-group">
+            <input type="file" id="fileInput" accept=".json" hidden>
+            <button class="btn-secondary" onclick="document.getElementById('fileInput').click()">📁 Cargar archivo JSON</button>
+          </div>
+          <button class="btn-primary" onclick="descargarJSON()">💾 Exportar / Guardar JSON</button>
+        </div>
+      </section>
+      <!-- Tabla de expedientes siempre visible en los módulos -->
+      <div id="tabla-container-1"></div>
+    </div>
+
+    <!-- Módulo 2: Gestión (CRUD) -->
+    <div id="sec-gestion" class="module-sheet">
+      <button class="btn-back-menu" onclick="cerrarModulo('sec-gestion')">← Volver al Menú Principal</button>
+      <section class="card">
+        <div class="card-header">
+          <h2>2. Gestión de Expediente (Alta / Baja)</h2>
+        </div>
+        <div class="card-body">
+          <form id="expedienteForm">
+            <div class="form-group">
+              <label for="codigo">Código Único</label>
+              <input type="text" id="codigo" placeholder="ej. EXP-001" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" placeholder="Nombre" required>
+              </div>
+              <div class="form-group">
+                <label for="apellido">Apellido</label>
+                <input type="text" id="apellido" placeholder="Apellido" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="fecha">Fecha de registro</label>
+              <input type="date" id="fecha" required>
+            </div>
+            <div class="form-group">
+              <label for="descripcion">Descripción confidencial</label>
+              <textarea id="descripcion" rows="3" placeholder="Ingrese detalles confidenciales..." required></textarea>
+            </div>
+            <button type="button" class="btn-primary" onclick="guardarExpediente()">➕ Guardar Expediente</button>
+          </form>
+        </div>
+      </section>
+      <div id="tabla-container-2"></div>
+    </div>
+
+    <!-- Módulo 3: Ordenar -->
+    <div id="sec-ordenar" class="module-sheet">
+      <button class="btn-back-menu" onclick="cerrarModulo('sec-ordenar')">← Volver al Menú Principal</button>
+      <section class="card">
+        <div class="card-header">
+          <h2>3. Algoritmos de Ordenamiento</h2>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="criterioOrden">Criterio de orden:</label>
+            <select id="criterioOrden">
+              <option value="codigo">Código</option>
+              <option value="nombre">Nombre</option>
+            </select>
+          </div>
+          <div class="btn-group">
+            <button class="btn-primary" onclick="ejecutarBurbujaUI()">Burbuja</button>
+            <button class="btn-primary" onclick="ejecutarSeleccionUI()">Selección</button>
+          </div>
+          <div class="metric-box">
+            <span>Comparaciones realizadas:</span>
+            <strong id="comparacionesOrden">0</strong>
+          </div>
+        </div>
+      </section>
+      <div id="tabla-container-3"></div>
+    </div>
+
+    <!-- Módulo 4: Buscar -->
+    <div id="sec-buscar" class="module-sheet">
+      <button class="btn-back-menu" onclick="cerrarModulo('sec-buscar')">← Volver al Menú Principal</button>
+      <section class="card">
+        <div class="card-header">
+          <h2>4. Algoritmos de Búsqueda</h2>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="busquedaCodigo">Código de expediente a buscar:</label>
+            <input type="text" id="busquedaCodigo" placeholder="Ingrese el código exacto...">
+          </div>
+          <div class="btn-group">
+            <button class="btn-primary" onclick="ejecutarBusquedaSecuencialUI()">Búsqueda Secuencial</button>
+            <button class="btn-primary" onclick="ejecutarBusquedaBinariaUI()">Búsqueda Binaria</button>
+          </div>
+          <div class="metric-box">
+            <span>Estado:</span>
+            <span id="resultadoBusqueda">-</span>
+          </div>
+          <div class="metric-box">
+            <span>Comparaciones realizadas:</span>
+            <strong id="comparacionesBusqueda">0</strong>
+          </div>
+        </div>
+      </section>
+      <div id="tabla-container-4"></div>
+    </div>
+
+    <!-- Módulo 5: Cifrar -->
+    <div id="sec-cifrar" class="module-sheet">
+      <button class="btn-back-menu" onclick="cerrarModulo('sec-cifrar')">← Volver al Menú Principal</button>
+      <section class="card">
+        <div class="card-header">
+          <h2>5. Cifrado y Descifrado César</h2>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="desplazamiento">Número de desplazamiento:</label>
+            <input type="number" id="desplazamiento" value="3" min="1" max="25">
+          </div>
+          <div class="btn-group">
+            <button class="btn-primary" onclick="ejecutarCifradoCesar(true)">🔒 Cifrar Descripciones</button>
+            <button class="btn-secondary" onclick="ejecutarCifradoCesar(false)">🔓 Descifrar Descripciones</button>
+          </div>
+        </div>
+      </section>
+      <div id="tabla-container-5"></div>
+    </div>
+
+    <!-- Muestra reutilizable de Tabla de Datos -->
+    <template id="tablaTemplate">
+      <section class="card">
+        <div class="card-header">
+          <h2>Expedientes Registrados</h2>
+        </div>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Fecha</th>
+                <th>Descripción Confidencial</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="tbody-target"></tbody>
+          </table>
+        </div>
+      </section>
+    </template>
+
+  </main>
+
+  <footer class="umg-footer">
+    <div class="footer-content">
+      <span>Ing. David Díaz</span>
+    </div>
+  </footer>
+
+  <!-- LÓGICA DE ALGORITMOS Y CONTROLADORES -->
+  <script>
+    /* ===================================================
+       1. MÓDULO DE ORDENAMIENTO (Anthony)
+       =================================================== */
+    (function () {
+      "use strict";
+
+      function obtenerClave(expediente, campo) {
+        const valor = expediente && expediente[campo] != null ? String(expediente[campo]) : "";
+        return valor.trim().toLocaleLowerCase("es");
+      }
+
+      function intercambiar(arreglo, i, j) {
+        const temporal = arreglo[i];
+        arreglo[i] = arreglo[j];
+        arreglo[j] = temporal;
+      }
+
+      function burbuja(expedientes, campo = "codigo") {
+        const datos = Array.isArray(expedientes) ? expedientes.slice() : [];
+        let comparaciones = 0;
+
+        for (let i = 0; i < datos.length - 1; i++) {
+          let huboIntercambio = false;
+          for (let j = 0; j < datos.length - 1 - i; j++) {
+            comparaciones++;
+            if (obtenerClave(datos[j], campo) > obtenerClave(datos[j + 1], campo)) {
+              intercambiar(datos, j, j + 1);
+              huboIntercambio = true;
+            }
+          }
+          if (!huboIntercambio) break;
+        }
+
+        return { datos, comparaciones, algoritmo: "Burbuja", campo };
+      }
+
+      function seleccion(expedientes, campo = "codigo") {
+        const datos = Array.isArray(expedientes) ? expedientes.slice() : [];
+        let comparaciones = 0;
+
+        for (let i = 0; i < datos.length - 1; i++) {
+          let indiceMenor = i;
+          for (let j = i + 1; j < datos.length; j++) {
+            comparaciones++;
+            if (obtenerClave(datos[j], campo) < obtenerClave(datos[indiceMenor], campo)) {
+              indiceMenor = j;
+            }
+          }
+          if (indiceMenor !== i) intercambiar(datos, i, indiceMenor);
+        }
+
+        return { datos, comparaciones, algoritmo: "Selección", campo };
+      }
+
+      window.OrdenamientoExpedientes = Object.freeze({ burbuja, seleccion });
+    })();
+
+    /* ===================================================
+       2. MÓDULO DE BÚSQUEDA (Anthony)
+       =================================================== */
+    (function () {
+      "use strict";
+
+      function normalizarCodigo(valor) {
+        return String(valor == null ? "" : valor).trim().toLocaleLowerCase("es");
+      }
+
+      function secuencial(expedientes, codigoBuscado) {
+        const datos = Array.isArray(expedientes) ? expedientes : [];
+        const objetivo = normalizarCodigo(codigoBuscado);
+        let comparaciones = 0;
+
+        if (!objetivo) {
+          return { encontrado: false, indice: -1, expediente: null, comparaciones, algoritmo: "Secuencial", mensaje: "Ingrese un código válido." };
+        }
+
+        for (let i = 0; i < datos.length; i++) {
+          comparaciones++;
+          if (normalizarCodigo(datos[i] && datos[i].codigo) === objetivo) {
+            return { encontrado: true, indice: i, expediente: datos[i], comparaciones, algoritmo: "Secuencial", mensaje: "Expediente encontrado." };
+          }
+        }
+
+        return { encontrado: false, indice: -1, expediente: null, comparaciones, algoritmo: "Secuencial", mensaje: "No existe un expediente con ese código." };
+      }
+
+      function binaria(expedientes, codigoBuscado) {
+        const datos = Array.isArray(expedientes) ? expedientes : [];
+        const objetivo = normalizarCodigo(codigoBuscado);
+        let comparaciones = 0;
+
+        if (!objetivo) {
+          return { encontrado: false, indice: -1, expediente: null, comparaciones, algoritmo: "Binaria", mensaje: "Ingrese un código válido." };
+        }
+
+        const orden = window.OrdenamientoExpedientes.seleccion(datos, "codigo");
+        const ordenados = orden.datos;
+        let izquierda = 0;
+        let derecha = ordenados.length - 1;
+
+        while (izquierda <= derecha) {
+          const medio = Math.floor((izquierda + derecha) / 2);
+          comparaciones++;
+          const codigoMedio = normalizarCodigo(ordenados[medio] && ordenados[medio].codigo);
+
+          if (codigoMedio === objetivo) {
+            return {
+              encontrado: true,
+              indice: medio,
+              expediente: ordenados[medio],
+              comparaciones,
+              algoritmo: "Binaria",
+              mensaje: "Expediente encontrado."
+            };
+          }
+
+          if (codigoMedio < objetivo) izquierda = medio + 1;
+          else derecha = medio - 1;
+        }
+
+        return {
+          encontrado: false,
+          indice: -1,
+          expediente: null,
+          comparaciones,
+          algoritmo: "Binaria",
+          mensaje: "No existe un expediente con ese código."
+        };
+      }
+
+      window.BusquedaExpedientes = Object.freeze({ secuencial, binaria });
+    })();
+
+    /* ===================================================
+       3. ESTADO GLOBAL Y LÓGICA GENERAL
+       =================================================== */
+    let expedientes = [
+      { codigo: "EXP-001", nombre: "Ana", apellido: "López", fecha: "2026-10-16", descripcion: "Informe confidencial A" },
+      { codigo: "EXP-002", nombre: "Carlos", apellido: "Gómez", fecha: "2026-10-18", descripcion: "Evaluación crediticia B" }
+    ];
+
+    let moduloActualId = null;
+
+    // NAVEGACIÓN TIPO SLIDE EN POWERPOINT
+    function abrirModulo(idModulo) {
+      moduloActualId = idModulo;
+      const sheet = document.getElementById(idModulo);
+      sheet.classList.remove("exit-slide");
+      sheet.classList.add("active-slide");
+      renderizarTablaUI();
+    }
+
+    function cerrarModulo(idModulo) {
+      const sheet = document.getElementById(idModulo);
+      sheet.classList.add("exit-slide");
+      setTimeout(() => {
+        sheet.classList.remove("active-slide", "exit-slide");
+        moduloActualId = null;
+      }, 400);
+    }
+
+    // RENDERIZADO DE TABLA EN EL MÓDULO ACTIVO
+    function renderizarTablaUI() {
+      if (!moduloActualId) return;
+
+      const numModulo = moduloActualId.split('-')[1];
+      const targetContainer = document.getElementById(`tabla-container-${numModuloToIdx(numModulo)}`);
+      
+      if (!targetContainer) return;
+
+      targetContainer.innerHTML = "";
+      const template = document.getElementById("tablaTemplate").content.cloneNode(true);
+      const tbody = template.querySelector(".tbody-target");
+
+      expedientes.forEach((exp) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><strong>${exp.codigo}</strong></td>
+          <td>${exp.nombre}</td>
+          <td>${exp.apellido}</td>
+          <td>${exp.fecha}</td>
+          <td>${exp.descripcion}</td>
+          <td>
+            <button class="btn-danger" onclick="eliminarExpediente('${exp.codigo}')">Eliminar</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      targetContainer.appendChild(template);
+    }
+
+    function numModuloToIdx(nombre) {
+      const map = { 'persistencia': 1, 'gestion': 2, 'ordenar': 3, 'buscar': 4, 'cifrar': 5 };
+      return map[nombre] || 1;
+    }
+
+    // ELIMINAR EXPEDIENTE POR CÓDIGO ÚNICO (CORREGIDO)
+    function eliminarExpediente(codigo) {
+      const idx = expedientes.findIndex(exp => exp.codigo === codigo);
+      if (idx !== -1) {
+        expedientes.splice(idx, 1);
+        renderizarTablaUI();
+      }
+    }
+
+    // MÓDULO 1: PERSISTENCIA
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (Array.isArray(data)) {
+            expedientes = data;
+            renderizarTablaUI();
+            alert("Archivo JSON cargado exitosamente.");
+          } else {
+            alert("El archivo JSON debe contener un arreglo de objetos.");
+          }
+        } catch (err) {
+          alert("Error al parsear el archivo JSON.");
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    function descargarJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(expedientes, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "expedientes_umg.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    // MÓDULO 2: GESTIÓN (CRUD)
+    function guardarExpediente() {
+      const codigo = document.getElementById("codigo").value.trim();
+      const nombre = document.getElementById("nombre").value.trim();
+      const apellido = document.getElementById("apellido").value.trim();
+      const fecha = document.getElementById("fecha").value;
+      const descripcion = document.getElementById("descripcion").value.trim();
+
+      if (!codigo || !nombre || !apellido || !fecha || !descripcion) {
+        alert("Todos los campos son obligatorios.");
+        return;
+      }
+
+      // Validar código duplicado
+      if (expedientes.some(exp => exp.codigo.toLowerCase() === codigo.toLowerCase())) {
+        alert("El código de expediente ya existe.");
+        return;
+      }
+
+      expedientes.push({ codigo, nombre, apellido, fecha, descripcion });
+      document.getElementById("expedienteForm").reset();
+      renderizarTablaUI();
+    }
+
+    // MÓDULO 3: ORDENAMIENTO
+    function ejecutarBurbujaUI() {
+      const campo = document.getElementById("criterioOrden").value;
+      const res = window.OrdenamientoExpedientes.burbuja(expedientes, campo);
+      expedientes = res.datos;
+      document.getElementById("comparacionesOrden").innerText = res.comparaciones;
+      renderizarTablaUI();
+    }
+
+    function ejecutarSeleccionUI() {
+      const campo = document.getElementById("criterioOrden").value;
+      const res = window.OrdenamientoExpedientes.seleccion(expedientes, campo);
+      expedientes = res.datos;
+      document.getElementById("comparacionesOrden").innerText = res.comparaciones;
+      renderizarTablaUI();
+    }
+
+    // MÓDULO 4: BÚSQUEDA
+    function ejecutarBusquedaSecuencialUI() {
+      const codigo = document.getElementById("busquedaCodigo").value;
+      const res = window.BusquedaExpedientes.secuencial(expedientes, codigo);
+      document.getElementById("resultadoBusqueda").innerText = res.mensaje;
+      document.getElementById("comparacionesBusqueda").innerText = res.comparaciones;
+    }
+
+    function ejecutarBusquedaBinariaUI() {
+      const codigo = document.getElementById("busquedaCodigo").value;
+      const res = window.BusquedaExpedientes.binaria(expedientes, codigo);
+      document.getElementById("resultadoBusqueda").innerText = res.mensaje;
+      document.getElementById("comparacionesBusqueda").innerText = res.comparaciones;
+    }
+
+    // MÓDULO 5: CIFRADO CÉSAR
+    function ejecutarCifradoCesar(esCifrar) {
+      let desp = parseInt(document.getElementById("desplazamiento").value) || 3;
+      if (!esCifrar) desp = -desp;
+
+      expedientes.forEach(exp => {
+        let texto = exp.descripcion;
+        let res = "";
+        for (let i = 0; i < texto.length; i++) {
+          let code = texto.charCodeAt(i);
+          if (code >= 32 && code <= 126) {
+            let nuevoCode = ((code - 32 + desp + 9500) % 95) + 32;
+            res += String.fromCharCode(nuevoCode);
+          } else {
+            res += texto[i];
+          }
+        }
+        exp.descripcion = res;
+      });
+
+      renderizarTablaUI();
+    }
+  </script>
+</body>
+</html>
