@@ -442,7 +442,6 @@
           <button class="btn-primary" onclick="descargarJSON()">💾 Exportar / Guardar JSON</button>
         </div>
       </section>
-      <!-- Tabla de expedientes siempre visible en los módulos -->
       <div id="tabla-container-1"></div>
     </div>
 
@@ -562,7 +561,7 @@
       <div id="tabla-container-5"></div>
     </div>
 
-    <!-- Muestra reutilizable de Tabla de Datos -->
+    <!-- Plantilla reutilizable de Tabla de Datos -->
     <template id="tablaTemplate">
       <section class="card">
         <div class="card-header">
@@ -793,7 +792,7 @@
       return map[nombre] || 1;
     }
 
-    // ELIMINAR EXPEDIENTE POR CÓDIGO ÚNICO (CORREGIDO)
+    // ELIMINAR EXPEDIENTE POR CÓDIGO ÚNICO
     function eliminarExpediente(codigo) {
       const idx = expedientes.findIndex(exp => exp.codigo === codigo);
       if (idx !== -1) {
@@ -848,7 +847,6 @@
         return;
       }
 
-      // Validar código duplicado
       if (expedientes.some(exp => exp.codigo.toLowerCase() === codigo.toLowerCase())) {
         alert("El código de expediente ya existe.");
         return;
