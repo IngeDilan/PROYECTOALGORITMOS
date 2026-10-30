@@ -35,13 +35,13 @@
       overflow-x: hidden;
     }
 
-    /* ENCABEZADO INSTITUCIONAL */
+    /* ENCABEZADO INSTITUCIONAL CON BORDES ENGROSADOS */
     .umg-header {
       background: linear-gradient(135deg, var(--umg-navy) 0%, var(--umg-blue-dark) 100%);
       color: #FFFFFF;
-      padding: 16px 30px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      border-bottom: 4px solid var(--umg-red);
+      padding: 18px 35px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+      border-bottom: 8px solid var(--umg-red);
       position: relative;
       z-index: 10;
     }
@@ -50,28 +50,28 @@
       display: flex;
       align-items: center;
       gap: 20px;
-      max-width: 1300px;
+      max-width: 1400px;
       margin: 0 auto;
     }
 
     .logo-area img {
-      width: 55px;
-      height: 55px;
+      width: 60px;
+      height: 60px;
       object-fit: contain;
       background: #FFFFFF;
       border-radius: 50%;
       padding: 2px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
     }
 
     .title-area h1 {
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       letter-spacing: 0.5px;
       font-weight: 700;
     }
 
     .title-area p {
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       color: #93C5FD;
       margin-top: 2px;
     }
@@ -80,10 +80,10 @@
     .main-viewport {
       flex: 1;
       position: relative;
-      max-width: 1300px;
+      max-width: 1400px;
       width: 100%;
       margin: 0 auto;
-      padding: 25px;
+      padding: 30px;
     }
 
     .view-screen {
@@ -97,15 +97,15 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 65vh;
+      min-height: 70vh;
     }
 
     /* Pestaña tipo Hoja deslizante encima del menú */
     .module-sheet {
       position: absolute;
-      top: 25px;
-      left: 25px;
-      right: 25px;
+      top: 30px;
+      left: 30px;
+      right: 30px;
       background: transparent;
       display: none;
       transform: translateY(100vh);
@@ -132,48 +132,50 @@
       to { transform: translateY(100vh); opacity: 0; }
     }
 
-    /* DISEÑO DE LA RUEDA INTERACTIVA (SVG) */
+    /* RUEDA DECORADA Y AGRANDADA (560px) */
     .wheel-container {
       position: relative;
-      width: 420px;
-      height: 420px;
+      width: 560px;
+      height: 560px;
     }
 
     .wheel-svg {
       width: 100%;
       height: 100%;
-      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
+      filter: drop-shadow(0 15px 35px rgba(0,0,0,0.22));
     }
 
     .wheel-sector {
       cursor: pointer;
-      transition: transform 0.25s ease, filter 0.25s ease;
-      transform-origin: 200px 200px;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+      transform-origin: 250px 250px;
     }
 
     .wheel-sector:hover {
-      transform: scale(1.03);
-      filter: brightness(1.12);
+      transform: scale(1.04);
+      filter: brightness(1.15);
     }
 
     .wheel-center-circle {
-      fill: var(--umg-navy);
+      fill: url(#centerGradient);
       stroke: #FFFFFF;
-      stroke-width: 4;
+      stroke-width: 6;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
     }
 
     .wheel-center-text {
       fill: #FFFFFF;
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 16px;
+      font-weight: 800;
       text-anchor: middle;
       dominant-baseline: middle;
       pointer-events: none;
+      letter-spacing: 1px;
     }
 
     .sector-label {
       fill: #FFFFFF;
-      font-size: 12px;
+      font-size: 14px;
       font-weight: 700;
       text-anchor: middle;
       pointer-events: none;
@@ -183,96 +185,101 @@
     .btn-back-menu {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       background-color: var(--card-bg);
       color: var(--umg-navy);
-      border: 1px solid var(--border-color);
-      padding: 10px 18px;
-      border-radius: 6px;
-      font-weight: 600;
+      border: 2px solid var(--border-color);
+      padding: 12px 22px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
       cursor: pointer;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      transition: all 0.2s;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      transition: all 0.25s ease;
     }
 
     .btn-back-menu:hover {
       background-color: var(--umg-navy);
       color: #FFFFFF;
+      border-color: var(--umg-navy);
+      transform: translateY(-2px);
     }
 
     .card {
       background: var(--card-bg);
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
       border: 1px solid var(--border-color);
       overflow: hidden;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
     }
 
     .card-header {
       background-color: var(--umg-navy);
       color: #FFFFFF;
-      padding: 14px 20px;
+      padding: 16px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
     .card-header h2 {
-      font-size: 1.1rem;
-      font-weight: 600;
+      font-size: 1.15rem;
+      font-weight: 700;
     }
 
     .card-body {
-      padding: 20px;
+      padding: 24px;
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 18px;
     }
 
     /* FORMULARIOS Y TABLA */
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
     }
 
     .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 15px;
+      gap: 18px;
     }
 
     label {
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       font-weight: 600;
       color: var(--text-dark);
     }
 
     input, select, textarea {
       width: 100%;
-      padding: 10px 12px;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      font-size: 0.9rem;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.95rem;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     input:focus, select:focus, textarea:focus {
       border-color: var(--umg-blue-sky);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
     }
 
     .btn-primary {
       background-color: var(--umg-blue-dark);
       color: #FFFFFF;
       border: none;
-      padding: 11px 18px;
-      border-radius: 6px;
-      font-weight: 600;
+      padding: 12px 22px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: background-color 0.2s, transform 0.1s;
     }
 
     .btn-primary:hover {
@@ -283,9 +290,10 @@
       background-color: #E2E8F0;
       color: var(--text-dark);
       border: 1px solid var(--border-color);
-      padding: 11px 18px;
-      border-radius: 6px;
-      font-weight: 600;
+      padding: 12px 22px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
       cursor: pointer;
     }
 
@@ -293,10 +301,12 @@
       background-color: var(--umg-red);
       color: #FFFFFF;
       border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
+      padding: 7px 14px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: background-color 0.2s;
     }
 
     .btn-danger:hover {
@@ -306,16 +316,16 @@
     .btn-group {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 15px;
     }
 
     .metric-box {
       background-color: var(--bg-color);
-      padding: 10px 14px;
-      border-radius: 6px;
+      padding: 12px 18px;
+      border-radius: 8px;
       display: flex;
       justify-content: space-between;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       border: 1px dashed var(--border-color);
     }
 
@@ -326,11 +336,11 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
     }
 
     th, td {
-      padding: 12px 15px;
+      padding: 14px 18px;
       text-align: left;
       border-bottom: 1px solid var(--border-color);
     }
@@ -345,18 +355,18 @@
       background-color: #F1F5F9;
     }
 
-    /* PIE DE PÁGINA */
+    /* PIE DE PÁGINA ENGROSADO */
     .umg-footer {
       background-color: var(--umg-navy);
       color: #FFFFFF;
-      padding: 14px 30px;
-      border-top: 3px solid var(--umg-blue-sky);
-      font-size: 0.85rem;
+      padding: 18px 35px;
+      border-top: 8px solid var(--umg-blue-sky);
+      font-size: 0.9rem;
       margin-top: auto;
     }
 
     .footer-content {
-      max-width: 1300px;
+      max-width: 1400px;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
@@ -370,7 +380,7 @@
   <header class="umg-header">
     <div class="header-content">
       <div class="logo-area">
-        <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/1/15/Escudo_de_la_universidad_Mariano_G%C3%A1lvez_Guatemala.svg/960px-Escudo_de_la_universidad_Mariano_G%C3%A1lvez_Guatemala.svg.png?utm_source=es.wikipedia.org&utm_campaign=index&utm_content=thumbnail" 
+        <img src="https://www.nicepng.com/ourpic/u2w7o0i1u2e6q8w7_this-escudo-de-la-universidad-mariano-galvez/" 
              alt="Escudo UMG" 
              onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/4/4A/Logo_UMG.png'; this.onerror=null;">
       </div>
@@ -383,48 +393,86 @@
 
   <main class="main-viewport">
 
-    <!-- VISTA PRINCIPAL: MENÚ DE RUEDA SECTORIZADA -->
+    <!-- VISTA PRINCIPAL: MENÚ DE RUEDA AGRANDADA Y DECORADA -->
     <div id="menuView" class="view-screen">
       <div class="wheel-container">
-        <svg class="wheel-svg" viewBox="0 0 400 400">
-          <!-- Sector 1: Persistencia (Carga/Guardado) -->
+        <svg class="wheel-svg" viewBox="0 0 500 500">
+          <defs>
+            <!-- Degradados vectoriales para cada sector -->
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0F2027" />
+              <stop offset="100%" stop-color="#203A43" />
+            </linearGradient>
+            <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#1E3A8A" />
+              <stop offset="100%" stop-color="#1D4ED8" />
+            </linearGradient>
+            <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0284C7" />
+              <stop offset="100%" stop-color="#0369A1" />
+            </linearGradient>
+            <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#C2410C" />
+              <stop offset="100%" stop-color="#9A3412" />
+            </linearGradient>
+            <linearGradient id="grad5" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#991B1B" />
+              <stop offset="100%" stop-color="#7F1D1D" />
+            </linearGradient>
+            <linearGradient id="centerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0A192F" />
+              <stop offset="100%" stop-color="#1E293B" />
+            </linearGradient>
+          </defs>
+
+          <!-- Sector 1: Persistencia -->
           <g class="wheel-sector" onclick="abrirModulo('sec-persistencia')">
-            <path d="M 200 200 L 200 20 A 180 180 0 0 1 371.2 144.3 Z" fill="#0A192F" />
-            <text x="265" y="105" class="sector-label">1. Persistencia</text>
+            <path d="M 250 250 L 250 25 A 225 225 0 0 1 463.9 180.4 Z" fill="url(#grad1)" stroke="#FFFFFF" stroke-width="3" />
+            <circle cx="335" cy="110" r="22" fill="rgba(255,255,255,0.15)" />
+            <path d="M 327 103 h 16 v 14 h -16 z M 331 100 h 8 v 3 h -8 z" fill="#FFFFFF" />
+            <text x="335" y="145" class="sector-label">1. Persistencia</text>
           </g>
 
-          <!-- Sector 2: Gestión (Alta/Baja) -->
+          <!-- Sector 2: Gestión -->
           <g class="wheel-sector" onclick="abrirModulo('sec-gestion')">
-            <path d="M 200 200 L 371.2 144.3 A 180 180 0 0 1 305.8 345.6 Z" fill="#1E3A8A" />
-            <text x="305" y="225" class="sector-label">2. Gestión</text>
+            <path d="M 250 250 L 463.9 180.4 A 225 225 0 0 1 382.2 432 Z" fill="url(#grad2)" stroke="#FFFFFF" stroke-width="3" />
+            <circle cx="385" cy="280" r="22" fill="rgba(255,255,255,0.15)" />
+            <path d="M 377 272 h 7 l 2 3 h 7 v 12 h -16 z" fill="#FFFFFF" />
+            <text x="385" y="315" class="sector-label">2. Gestión</text>
           </g>
 
           <!-- Sector 3: Ordenar -->
           <g class="wheel-sector" onclick="abrirModulo('sec-ordenar')">
-            <path d="M 200 200 L 305.8 345.6 A 180 180 0 0 1 94.2 345.6 Z" fill="#0284C7" />
-            <text x="200" y="325" class="sector-label">3. Ordenar</text>
+            <path d="M 250 250 L 382.2 432 A 225 225 0 0 1 117.8 432 Z" fill="url(#grad3)" stroke="#FFFFFF" stroke-width="3" />
+            <circle cx="250" cy="400" r="22" fill="rgba(255,255,255,0.15)" />
+            <path d="M 244 395 l 6 -6 l 6 6 h -4 v 10 h -4 v -10 z M 256 405 l -6 6 l -6 -6 h 4 v -10 h 4 v 10 z" fill="#FFFFFF" />
+            <text x="250" y="435" class="sector-label">3. Ordenar</text>
           </g>
 
           <!-- Sector 4: Buscar -->
           <g class="wheel-sector" onclick="abrirModulo('sec-buscar')">
-            <path d="M 200 200 L 94.2 345.6 A 180 180 0 0 1 28.8 144.3 Z" fill="#C2410C" />
-            <text x="95" y="225" class="sector-label">4. Buscar</text>
+            <path d="M 250 250 L 117.8 432 A 225 225 0 0 1 36.1 180.4 Z" fill="url(#grad4)" stroke="#FFFFFF" stroke-width="3" />
+            <circle cx="115" cy="280" r="22" fill="rgba(255,255,255,0.15)" />
+            <path d="M 110 273 a 6 6 0 1 0 8.5 8.5 l 4 4 l 2 -2 l -4 -4 a 6 6 0 0 0 -10.5 -2.5 z" fill="#FFFFFF" />
+            <text x="115" y="315" class="sector-label">4. Buscar</text>
           </g>
 
           <!-- Sector 5: Cifrar -->
           <g class="wheel-sector" onclick="abrirModulo('sec-cifrar')">
-            <path d="M 200 200 L 28.8 144.3 A 180 180 0 0 1 200 20 Z" fill="#991B1B" />
-            <text x="135" y="105" class="sector-label">5. Cifrar</text>
+            <path d="M 250 250 L 36.1 180.4 A 225 225 0 0 1 250 25 Z" fill="url(#grad5)" stroke="#FFFFFF" stroke-width="3" />
+            <circle cx="165" cy="110" r="22" fill="rgba(255,255,255,0.15)" />
+            <path d="M 160 108 v -4 a 5 5 0 0 1 10 0 v 4 h 2 v 10 h -14 v -10 z M 163 108 h 4 v -4 a 2 2 0 0 0 -4 0 z" fill="#FFFFFF" />
+            <text x="165" y="145" class="sector-label">5. Cifrar</text>
           </g>
 
-          <!-- Círculo Central Decorativo -->
-          <circle cx="200" cy="200" r="50" class="wheel-center-circle" />
-          <text x="200" y="200" class="wheel-center-text">MÓDULOS</text>
+          <!-- Círculo Central Decorado -->
+          <circle cx="250" cy="250" r="62" class="wheel-center-circle" />
+          <text x="250" y="250" class="wheel-center-text">MÓDULOS</text>
         </svg>
       </div>
     </div>
 
-    <!-- HOJA / PESTAÑA DESLIZANTE PARA CADA MÓDULO -->
+    <!-- PESTAÑA DESLIZANTE PARA CADA MÓDULO -->
 
     <!-- Módulo 1: Persistencia -->
     <div id="sec-persistencia" class="module-sheet">
